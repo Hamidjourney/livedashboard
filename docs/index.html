@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Live Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body{font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin: 24px;}
+    .wrap{max-width: 900px; margin: 0 auto;}
+    header{margin-bottom: 16px;}
+    #meta{font-size: 14px; color: #666; margin-bottom: 12px;}
+    canvas{width: 100%; height: 480px;}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Live Dashboard (Demo)</h1>
+    <div id="meta">Data source updates nightly via GitHub Actions.</div>
+  </header>
+  <canvas id="chart"></canvas>
+</div>
+<script>
+(async () => {
+  const resp = await fetch("./data/dataset.json?_=" + Date.now());
+  const rows = await resp.json();
+  const labels = rows.map(r => r.date);
+  const values = rows.map(r => r.value);
+
+  new Chart(document.getElementById('chart'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{ label: 'Demo Metric', data: values }]
+    },
+    options: {
+      responsive: true,
+      scales: { x: { ticks: { maxTicksLimit: 8 } } }
+    }
+  });
+})();
+</script>
+</body>
+</html>
