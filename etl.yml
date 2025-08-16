@@ -1,0 +1,27 @@
+name: ETL nightly
+on:
+  schedule:
+    - cron: "0 2 * * *"   # run daily at 02:00 UTC
+  workflow_dispatch:
+
+jobs:
+  run-etl:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install deps
+        run: pip install pandas
+      - name: Run ETL
+        run: python etl/etl.py
+      - name: Commit data
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add docs/data/dataset.json
+          git diff --staged --quiet || git commit -m "Update data"
+          git push
