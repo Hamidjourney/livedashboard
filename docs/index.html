@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bike Share – 2025 Monthly Totals & Top Stations</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root { --fg:#111; --muted:#666; --bg:#fff; --card:#f7f7f7; }
+    html,body { margin:0; padding:0; background:var(--bg); color:var(--fg); font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; }
+    .wrap { max-width:1100px; margin: 32px auto; padding: 0 16px; }
+    header { margin-bottom: 18px; }
+    h1 { font-size: clamp(20px, 3vw, 28px); margin:0 0 4px; }
+    .sub { color:var(--muted); font-size:14px; }
+    .grid { display:grid; grid-template-columns: 1.3fr 1fr; gap:20px; align-items:start; }
+    .card { background:var(--card); border-radius:12px; padding:16px; }
+    canvas { width:100%; height:420px; }
+    h2 { margin:0 0 12px; font-size:18px; }
+    .two-cols { display:grid; grid-template-columns: 1fr 1fr; gap:16px; }
+    ol { margin: 0; padding-left: 20px; }
+    li { margin: 4px 0; }
+    .kpi { display:flex; gap:16px; flex-wrap:wrap; margin: 10px 0 16px; }
+    .pill { background:#eee; padding:6px 10px; border-radius:999px; font-size:12px; color:#333; }
+    footer { margin-top: 22px; color:var(--muted); font-size: 12px; }
+    a { color: inherit; }
+    .error { color: #b00020; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>City Bike – 2025 Monthly Totals & Top Stations</h1>
+      <div id="meta" class="sub">Data updates via GitHub Actions after new monthly files are published.</div>
+    </header>
+
+    <div class="grid">
+      <section class="card">
+        <h2>Monthly Rides (2025)</h2>
+        <div class="kpi">
+          <span id="sum-2025" class="pill">Total 2025 rides: …</span>
+          <span id="months-loaded" class="pill">Months loaded: …</span>
+        </div>
+        <canvas id="barMonthly"></canvas>
+        <div id="bar-error" class="error"></div>
+      </section>
+
+      <section class="card">
+        <h2>Top Stations (Latest Month)</h2>
+        <div class="sub" id="latest-month">Latest month: …</div>
+        <div class="two-cols" style="margin-top:10px;">
+          <div>
+            <strong>Starts — Casual</strong>
+            <ol id="starts-casual"></ol>
+          </div>
+          <div>
+            <strong>Starts — Member</strong>
+            <ol id="starts-member"></ol>
+          </div>
+          <div>
+            <strong>Ends — Casual</strong>
+            <ol id="ends-casual"></ol>
+          </div>
+          <div>
+            <strong>Ends — Member</strong>
+            <ol id="ends-member"></ol>
+          </div>
+        </div>
+        <div id="top-error" class="error"></div>
+      </section>
+    </div>
+
+    <footer>
+      Built with Chart.js on GitHub Pages. Data files: <code>docs/data/monthly_totals_2025.json</code>, <code>docs/data/top_stations_latest.json</code>.
+    </footer>
+  </div>
+
+<script>
+async function fetchJSON(path) {
+  const res = await fetch(path + "?_=" + Date.now());
+  if (!res.ok) throw new Error("HTTP " + res.status + " for " + path);
+  return res.json();
+}
+
+function formatList(list, el) {
+  el.innerHTML = "";
+  list.forEach(item => {
+    const li = document.createElement("li");
+    const name = item.station_name || "Unknown";
+    const trips = Number(item.trips || 0).toLocaleString();
+    li.textContent = `${name} — ${trips}`;
+    el.appendChild(li);
+  });
+}
+
+(async () => {
+  // 1) Monthly totals bar chart
+  try {
+    const monthly = await fetchJSON("./data/monthly_totals_2025.json");
+    const byMonth = monthly.sort((a,b) => a.month.localeCompare(b.month));
+    const labels = byMonth.map(r => r.month);
+    const values = byMonth.map(r => r.rides);
+
+    const sum = values.reduce((a,b) => a + (Number(b)||0), 0);
+    document.getElementById("sum-2025").textContent = "Total 2025 rides: " + sum.toLocaleString();
+    document.getElementById("months-loaded").textContent = "Months loaded: " + values.length;
+
+    const ctx = document.getElementById("barMonthly");
+    new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels,
+        datasets: [{
+          label: "Rides per month (2025)",
+          data: values
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: true }
+        },
+        scales: {
+          x: { ticks: { maxRotation: 0 } },
+          y: { beginAtZero: true }
+        }
+      }
+    });
+  } catch (err) {
+    document.getElementById("bar-error").textContent = String(err);
+  }
+
+  // 2) Top 5 stations lists
+  try {
+    const tops = await fetchJSON("./data/top_stations_latest.json");
+    document.getElementById("latest-month").textContent = "Latest month: " + (tops.latest_month || "n/a");
+
+    formatList((tops.top5?.starts?.casual)||[], document.getElementById("starts-casual"));
+    formatList((tops.top5?.starts?.member)||[], document.getElementById("starts-member"));
+    formatList((tops.top5?.ends?.casual)||[], document.getElementById("ends-casual"));
+    formatList((tops.top5?.ends?.member)||[], document.getElementById("ends-member"));
+  } catch (err) {
+    document.getElementById("top-error").textContent = String(err);
+  }
+})();
+</script>
+</body>
+</html>
