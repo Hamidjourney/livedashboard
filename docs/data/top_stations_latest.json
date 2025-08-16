@@ -1,0 +1,117 @@
+{
+  "latest_month": "2025-07",
+  "top5": {
+    "starts": {
+      "casual": [
+        {
+          "station_id": "HB106",
+          "station_name": "River St & Newark St",
+          "trips": 880
+        },
+        {
+          "station_id": "HB201",
+          "station_name": "12 St & Sinatra Dr N",
+          "trips": 856
+        },
+        {
+          "station_id": "HB101",
+          "station_name": "Hoboken Terminal - Hudson St & Hudson Pl",
+          "trips": 841
+        },
+        {
+          "station_id": "JC115",
+          "station_name": "Grove St PATH",
+          "trips": 841
+        },
+        {
+          "station_id": "HB202",
+          "station_name": "14 St Ferry - 14 St & Shipyard Ln",
+          "trips": 789
+        }
+      ],
+      "member": [
+        {
+          "station_id": "JC115",
+          "station_name": "Grove St PATH",
+          "trips": 3861
+        },
+        {
+          "station_id": "HB106",
+          "station_name": "River St & Newark St",
+          "trips": 2192
+        },
+        {
+          "station_id": "HB101",
+          "station_name": "Hoboken Terminal - Hudson St & Hudson Pl",
+          "trips": 1964
+        },
+        {
+          "station_id": "JC009",
+          "station_name": "Hamilton Park",
+          "trips": 1830
+        },
+        {
+          "station_id": "JC116",
+          "station_name": "Exchange Pl",
+          "trips": 1792
+        }
+      ]
+    },
+    "ends": {
+      "casual": [
+        {
+          "station_id": "HB101",
+          "station_name": "Hoboken Terminal - Hudson St & Hudson Pl",
+          "trips": 912
+        },
+        {
+          "station_id": "HB106",
+          "station_name": "River St & Newark St",
+          "trips": 823
+        },
+        {
+          "station_id": "JC115",
+          "station_name": "Grove St PATH",
+          "trips": 819
+        },
+        {
+          "station_id": "HB201",
+          "station_name": "12 St & Sinatra Dr N",
+          "trips": 817
+        },
+        {
+          "station_id": "HB202",
+          "station_name": "14 St Ferry - 14 St & Shipyard Ln",
+          "trips": 797
+        }
+      ],
+      "member": [
+        {
+          "station_id": "JC115",
+          "station_name": "Grove St PATH",
+          "trips": 4065
+        },
+        {
+          "station_id": "HB101",
+          "station_name": "Hoboken Terminal - Hudson St & Hudson Pl",
+          "trips": 2365
+        },
+        {
+          "station_id": "HB106",
+          "station_name": "River St & Newark St",
+          "trips": 2144
+        },
+        {
+          "station_id": "JC009",
+          "station_name": "Hamilton Park",
+          "trips": 1831
+        },
+        {
+          "station_id": "JC116",
+          "station_name": "Exchange Pl",
+          "trips": 1787
+        }
+      ]
+    }
+  }
+}
